@@ -15,7 +15,6 @@ class AuthService {
         'password': password,
       }),
     );
-
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
       return Token.fromJson(data);

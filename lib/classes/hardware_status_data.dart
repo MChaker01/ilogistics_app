@@ -1,10 +1,11 @@
 class HardwareStatusData {
   final int id;
   final String partNumber;
-  final double quantity;
+  double quantity;
   String status; // Modifiable
   final String packing;
-  final double packingQty;
+  double packingQty;
+  bool isAdded; // Nouvelle propriété pour indiquer si la ligne a été ajoutée
 
   HardwareStatusData({
     required this.id,
@@ -13,6 +14,7 @@ class HardwareStatusData {
     required this.status,
     required this.packing,
     required this.packingQty,
+    this.isAdded = false, // Valeur par défaut : false
   });
 
   factory HardwareStatusData.fromJson(Map<String, dynamic> json) {

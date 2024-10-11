@@ -5,7 +5,7 @@ import '../classes/hardware_status_data.dart';
 class HardwareStatusFaultyService {
   Future<List<HardwareStatusData>> getHardwareStatusData() async {
     final response = await http.get(
-        Uri.parse('http://localhost/hardware_status_faulty.json')); // Adapte l'URL si nécessaire
+        Uri.parse('http://localhost/hardware_status_faulty.json'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
