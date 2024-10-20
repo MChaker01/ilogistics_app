@@ -1,3 +1,4 @@
+
 class HardwareStatusData {
   final int id;
   final String partNumber;

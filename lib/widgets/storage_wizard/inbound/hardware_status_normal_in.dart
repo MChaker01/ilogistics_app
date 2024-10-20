@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../services/hardware_status_normal_service.dart';
 import '../../../classes/hardware_status_data.dart';
+import '../../../services/hardware_status_normal_service.dart';
+
 
 class HardwareStatusNormalIn extends StatefulWidget {
   final Function(List<HardwareStatusData>) onHardwareStatusDataChanged; // Ajoute le callback
 
-  const HardwareStatusNormalIn({Key? key, required this.onHardwareStatusDataChanged}) : super(key: key); // Ajoute le paramètre au constructeur
+  const HardwareStatusNormalIn(
+      {Key? key, required this.onHardwareStatusDataChanged})
+      : super(key: key); // Ajoute le paramètre au constructeur
 
   @override
   State<HardwareStatusNormalIn> createState() =>
@@ -84,12 +87,10 @@ class _HardwareStatusNormalInState extends State<HardwareStatusNormalIn> {
           _quantityControllers[_hardwareStatusData.length] =
               TextEditingController(text: remainingQuantity.toString());
           _showIcons[_hardwareStatusData.length] = false;
+
+          // Appelle le callback pour passer les données mises à jour
+          widget.onHardwareStatusDataChanged(_hardwareStatusData);
         }
-
-        // Appelle le callback pour passer les données mises à jour
-        widget.onHardwareStatusDataChanged(_hardwareStatusData);
-
-
       } else {
         // Quantité invalide (0, null ou supérieure à la quantité initiale)
         data.quantity = data.packingQty;
@@ -153,6 +154,8 @@ class _HardwareStatusNormalInState extends State<HardwareStatusNormalIn> {
                       DataColumn(label: Text('Status')),
                       DataColumn(label: Text('Packing')),
                       DataColumn(label: Text('Packing Qty')),
+                      // On supprime la colonne "Location" ici
+                      // DataColumn(label: Text('Location')),
                       DataColumn(label: Text('Actions')),
                     ],
                     rows: _hardwareStatusData.map((data) {
@@ -166,7 +169,8 @@ class _HardwareStatusNormalInState extends State<HardwareStatusNormalIn> {
                               inputFormatters: [
                                 FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
                               ],
-                              onChanged: (newValue) => _handleQuantityChange(data, newValue, context),
+                              onChanged: (newValue) =>
+                                  _handleQuantityChange(data, newValue, context),
                             ),
                           ),
                           DataCell(
@@ -191,6 +195,8 @@ class _HardwareStatusNormalInState extends State<HardwareStatusNormalIn> {
                           ),
                           DataCell(Text(data.packing)),
                           DataCell(Text('${data.packingQty}')),
+                          // On supprime la cellule de la colonne "Location"
+                          // DataCell(Text(_locations[data.id] ?? '')),
                           DataCell(
                             Row(
                               mainAxisSize: MainAxisSize.min,

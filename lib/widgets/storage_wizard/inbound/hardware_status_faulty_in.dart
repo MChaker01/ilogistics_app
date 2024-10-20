@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../services/hardware_status_faulty_service.dart';
 import '../../../classes/hardware_status_data.dart';
+import '../../../services/hardware_status_faulty_service.dart';
 
 class HardwareStatusFaultyIn extends StatefulWidget {
   final Function(List<HardwareStatusData>) onHardwareStatusDataChanged; // Ajoute le callback
@@ -151,6 +151,8 @@ class _HardwareStatusFaultyInState extends State<HardwareStatusFaultyIn> {
                       DataColumn(label: Text('Status')),
                       DataColumn(label: Text('Packing')),
                       DataColumn(label: Text('Packing Qty')),
+                      // On supprime la colonne "Location" ici
+                      // DataColumn(label: Text('Location')),
                       DataColumn(label: Text('Actions')),
                     ],
                     rows: _hardwareStatusData.map((data) {
@@ -201,6 +203,8 @@ class _HardwareStatusFaultyInState extends State<HardwareStatusFaultyIn> {
                           ),
                           DataCell(Text(data.packing)),
                           DataCell(Text('${data.packingQty}')),
+                          // On supprime la cellule de la colonne "Location"
+                          // DataCell(Text(_locations[data.id] ?? '')),
                           DataCell(
                             Row(
                               mainAxisSize: MainAxisSize.min,

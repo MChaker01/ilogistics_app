@@ -13,6 +13,8 @@ import '../widgets/storage_wizard/outbound/dn_materials_out.dart';
 import '../widgets/storage_wizard/outbound/deliver_to_company_out.dart';
 import 'package:ism_two/widgets/storage_wizard/outbound/attachments_out.dart';
 import 'package:ism_two/widgets/storage_wizard/outbound/summary_out.dart';
+import '../services/hardware_status_normal_service.dart';
+import '../services/hardware_status_faulty_service.dart';
 
 class StorageWizardPage extends StatefulWidget {
   final String dnType;
@@ -26,7 +28,32 @@ class StorageWizardPage extends StatefulWidget {
 class _StorageWizardPageState extends State<StorageWizardPage> {
   int _currentStep = 0;
   List<HardwareStatusData> _hardwareStatusData = [];
-  String? _selectedStatusCategory = 'Normal'; // Initialise avec "Normal"
+  String? _selectedStatusCategory = 'Normal';
+
+  final HardwareStatusNormalService _normalService = HardwareStatusNormalService();
+  final HardwareStatusFaultyService _faultyService = HardwareStatusFaultyService();
+
+  // Fonction pour charger les données de statut matériel
+  Future<void> _fetchHardwareStatusData() async {
+    try {
+      // Chargez les données à partir du service approprié
+      List<HardwareStatusData> data = _selectedStatusCategory == 'Normal'
+          ? await _normalService.getHardwareStatusData()
+          : await _faultyService.getHardwareStatusData();
+
+      setState(() {
+        _hardwareStatusData = data;
+      });
+    } catch (e) {
+      print('Erreur lors du chargement des données de statut matériel: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchHardwareStatusData();
+  }
 
   List<Widget> get _steps => widget.dnType == 'INBOUND'
       ? [
@@ -48,7 +75,8 @@ class _StorageWizardPageState extends State<StorageWizardPage> {
         });
       },
     ),
-    StoreIn(),
+    // Transmettez _hardwareStatusData à StoreIn
+    StoreIn(hardwareStatusData: _hardwareStatusData),
     const AttachmentsIn(),
     const SummaryIn(),
   ]
@@ -144,9 +172,13 @@ class _StorageWizardPageState extends State<StorageWizardPage> {
                 onStatusCategorySelected: (value) {
                   setState(() {
                     _selectedStatusCategory = value;
+                    _fetchHardwareStatusData(); // Charger les données après le changement de catégorie
                   });
                 },
               )
+              // Transmettez _hardwareStatusData à StoreIn lors du clic sur "Continue"
+                  : i == 4 // Index de l'étape 'Store'
+                  ? StoreIn(hardwareStatusData: _hardwareStatusData)
                   : _steps[i], // Afficher les autres étapes normalement
             ),
         ],
