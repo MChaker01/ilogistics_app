@@ -76,7 +76,14 @@ class _StorageWizardPageState extends State<StorageWizardPage> {
       },
     ),
     // Transmettez _hardwareStatusData à StoreIn
-    StoreIn(hardwareStatusData: _hardwareStatusData),
+    StoreIn(
+      hardwareStatusData: _hardwareStatusData,
+      onHardwareStatusDataChanged: (data) {
+        setState(() {
+          _hardwareStatusData = data;
+        });
+      },
+    ),
     const AttachmentsIn(),
     const SummaryIn(),
   ]
@@ -178,7 +185,14 @@ class _StorageWizardPageState extends State<StorageWizardPage> {
               )
               // Transmettez _hardwareStatusData à StoreIn lors du clic sur "Continue"
                   : i == 4 // Index de l'étape 'Store'
-                  ? StoreIn(hardwareStatusData: _hardwareStatusData)
+                  ? StoreIn(
+                hardwareStatusData: _hardwareStatusData,
+                onHardwareStatusDataChanged: (data) { // Ajoutez le callback ici
+                  setState(() {
+                    _hardwareStatusData = data;
+                  });
+                },
+              )
                   : _steps[i], // Afficher les autres étapes normalement
             ),
         ],
