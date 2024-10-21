@@ -157,83 +157,83 @@ class _StoreInState extends State<StoreIn> {
           child: Scrollbar(
             thumbVisibility: true,
             child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SingleChildScrollView(
-
-                  child: DataTable(
-                    columns: const [
-                      DataColumn(label: Text('Part Number')),
-                      DataColumn(label: Text('Quantity')),
-                      DataColumn(label: Text('Status')),
-                      DataColumn(label: Text('Packing')),
-                      DataColumn(label: Text('Packing Qty')),
-                      DataColumn(label: Text('Location')),
-                      DataColumn(label: Text('Actions')),
-                    ],
-                    rows: widget.hardwareStatusData.map((data) {
-                      return DataRow(
-                        cells: [
-                          DataCell(Text(data.partNumber)),
-                          DataCell(
-                            TextFormField(
-                              controller: _quantityControllers[data.id],
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-                              ],
-                              onChanged: (newValue) => _handleQuantityChange(data.id, newValue),
-                            ),
+              scrollDirection: Axis.horizontal,
+              child: SingleChildScrollView(
+                child: DataTable(
+                  columns: const [
+                    DataColumn(label: Text('Part Number')),
+                    DataColumn(label: Text('Quantity')),
+                    DataColumn(label: Text('Status')),
+                    DataColumn(label: Text('Packing')),
+                    DataColumn(label: Text('Packing Qty')),
+                    DataColumn(label: Text('Location')),
+                    DataColumn(label: Text('Actions')),
+                  ],
+                  rows: widget.hardwareStatusData.map((data) {
+                    return DataRow(
+                      cells: [
+                        DataCell(Text(data.partNumber)),
+                        DataCell(
+                          TextFormField(
+                            controller: _quantityControllers[data.id],
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                            ],
+                            onChanged: (newValue) => _handleQuantityChange(data.id, newValue),
                           ),
-                          DataCell(
-                            Text(data.status),
+                        ),
+                        DataCell(
+                          Text(data.status),
+                        ),
+                        DataCell(
+                          Text(data.packing),
+                        ),
+                        DataCell(
+                          Text(data.packingQty.toString()),
+                        ),
+                        DataCell(
+                          DropdownButtonFormField<String>(
+                            value: _locations[data.id],
+                            onChanged: (newValue) =>
+                                _handleLocationChange(data.id, newValue!),
+                            items: const [
+                              DropdownMenuItem(
+                                value: 'A',
+                                child: Text('A'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'B',
+                                child: Text('B'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'C',
+                                child: Text('C'),
+                              ),
+                              DropdownMenuItem(
+                                value: 'D',
+                                child: Text('D'),
+                              ),
+                            ],
                           ),
-                          DataCell(
-                            Text(data.packing),
-                          ),
-                          DataCell(
-                            Text(data.packingQty.toString()),
-                          ),
-                          DataCell(
-                            DropdownButtonFormField<String>(
-                              value: _locations[data.id],
-                              onChanged: (newValue) =>
-                                  _handleLocationChange(data.id, newValue!),
-                              items: const [
-                                DropdownMenuItem(
-                                  value: 'A',
-                                  child: Text('A'),
+                        ),
+                        DataCell(
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              // Afficher les icônes de confirmation/annulation
+                              if (_showIcons[data.id]!)
+                                IconButton(
+                                  icon: const Icon(Icons.check, color: Colors.green),
+                                  onPressed: () => _confirmQuantity(data.id),
                                 ),
-                                DropdownMenuItem(
-                                  value: 'B',
-                                  child: Text('B'),
+                              if (_showIcons[data.id]!)
+                                IconButton(
+                                  icon: const Icon(Icons.close, color: Colors.red),
+                                  onPressed: () => _resetQuantity(data.id),
                                 ),
-                                DropdownMenuItem(
-                                  value: 'C',
-                                  child: Text('C'),
-                                ),
-                                DropdownMenuItem(
-                                  value: 'D',
-                                  child: Text('D'),
-                                ),
-                              ],
-                            ),
-                          ),
-                          DataCell(
-                            Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                // Afficher les icônes de confirmation/annulation
-                                if (_showIcons[data.id]!)
-                                  IconButton(
-                                    icon: const Icon(Icons.check, color: Colors.green),
-                                    onPressed: () => _confirmQuantity(data.id),
-                                  ),
-                                if (_showIcons[data.id]!)
-                                  IconButton(
-                                    icon: const Icon(Icons.close, color: Colors.red),
-                                    onPressed: () => _resetQuantity(data.id),
-                                  ),
-                                // Ajout de l'icône pour supprimer la ligne
+                              // Ajout de l'icône pour supprimer la ligne
+                              if (data.isAdded)
                                 IconButton(
                                   icon: const Icon(Icons.delete, color: Colors.red),
                                   onPressed: () {
@@ -243,14 +243,14 @@ class _StoreInState extends State<StoreIn> {
                                     }
                                   },
                                 ),
-                              ],
-                            ),
+                            ],
                           ),
-                        ],
-                      );
-                    }).toList(),
-                  ),
-                )
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
           ),
         ),
