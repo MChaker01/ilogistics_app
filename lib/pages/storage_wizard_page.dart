@@ -4,7 +4,9 @@ import 'package:ism_two/widgets/storage_wizard/inbound/hardware_status_faulty_in
 import 'package:ism_two/widgets/storage_wizard/inbound/hardware_status_in.dart';
 import 'package:ism_two/widgets/storage_wizard/inbound/hardware_status_normal_in.dart';
 import 'package:ism_two/widgets/storage_wizard/inbound/status_category_in.dart';
-import 'package:ism_two/widgets/storage_wizard/inbound/store_in.dart';
+import 'package:ism_two/widgets/storage_wizard/inbound/store_in.dart'; // Import pour StoreIn
+import 'package:ism_two/widgets/storage_wizard/inbound/store_normal_in.dart'; // Import pour StoreNormalIn
+import 'package:ism_two/widgets/storage_wizard/inbound/store_faulty_in.dart'; // Import pour StoreFaultyIn
 import 'package:ism_two/widgets/storage_wizard/inbound/summary_in.dart';
 import '../classes/hardware_status_data.dart';
 import '../widgets/storage_wizard/inbound/visual_check_in.dart';
@@ -75,8 +77,17 @@ class _StorageWizardPageState extends State<StorageWizardPage> {
         });
       },
     ),
-    // Transmettez _hardwareStatusData à StoreIn
-    StoreIn(
+    // Utilisez StoreNormalIn ou StoreFaultyIn en fonction de la catégorie
+    _selectedStatusCategory == 'Normal'
+        ? StoreNormalIn(
+      hardwareStatusData: _hardwareStatusData,
+      onHardwareStatusDataChanged: (data) {
+        setState(() {
+          _hardwareStatusData = data;
+        });
+      },
+    )
+        : StoreFaultyIn(
       hardwareStatusData: _hardwareStatusData,
       onHardwareStatusDataChanged: (data) {
         setState(() {
@@ -185,7 +196,16 @@ class _StorageWizardPageState extends State<StorageWizardPage> {
               )
               // Transmettez _hardwareStatusData à StoreIn lors du clic sur "Continue"
                   : i == 4 // Index de l'étape 'Store'
-                  ? StoreIn(
+                  ? _selectedStatusCategory == 'Normal'
+                  ? StoreNormalIn(
+                hardwareStatusData: _hardwareStatusData,
+                onHardwareStatusDataChanged: (data) { // Ajoutez le callback ici
+                  setState(() {
+                    _hardwareStatusData = data;
+                  });
+                },
+              )
+                  : StoreFaultyIn(
                 hardwareStatusData: _hardwareStatusData,
                 onHardwareStatusDataChanged: (data) { // Ajoutez le callback ici
                   setState(() {
